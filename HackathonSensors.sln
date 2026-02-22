@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Application", "2 - Application", "{7F3D015D-9FD4-4B8C-A57F-823885FF534F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackathonSensors.Application", "src\HackathonSensors.Application\HackathonSensors.Application.csproj", "{FC2208F9-FEAF-4C48-B060-1A4100293E45}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - WorkerService", "1 - WorkerService", "{27F01D10-9E14-4B1E-BBD7-D5FF17E52819}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HackathonSensors.WorkerService", "src\HackathonSensors.WorkerService\HackathonSensors.WorkerService.csproj", "{BAC1DF62-65BF-4633-9509-9CCB93AD06BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FC2208F9-FEAF-4C48-B060-1A4100293E45} = {7F3D015D-9FD4-4B8C-A57F-823885FF534F}
+		{BAC1DF62-65BF-4633-9509-9CCB93AD06BC} = {27F01D10-9E14-4B1E-BBD7-D5FF17E52819}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC2208F9-FEAF-4C48-B060-1A4100293E45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC2208F9-FEAF-4C48-B060-1A4100293E45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC2208F9-FEAF-4C48-B060-1A4100293E45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC2208F9-FEAF-4C48-B060-1A4100293E45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAC1DF62-65BF-4633-9509-9CCB93AD06BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAC1DF62-65BF-4633-9509-9CCB93AD06BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAC1DF62-65BF-4633-9509-9CCB93AD06BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAC1DF62-65BF-4633-9509-9CCB93AD06BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

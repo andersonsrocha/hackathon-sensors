@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sensor-config
+data:
+  JWT_ISSUER: https://localhost:7054/
+  JWT_AUDIENCE: https://localhost:7054/
+  PLOT_ID: "73df2149-4b7a-482f-aede-b928aac66842"
+  ENVIRONMENT: Production

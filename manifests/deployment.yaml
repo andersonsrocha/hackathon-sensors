@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sensor-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sensor
+  template:
+    metadata:
+      labels:
+        app: sensor
+    spec:
+      containers:
+        - name: sensor-container
+          image: andersonsrocha/sensor:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "150m"
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
+          env:
+            - name: RabbitMQ__HostName
+              value: "rabbitmq.messaging.svc.cluster.local"
+            - name: RabbitMQ__QueueName
+              value: "sensor.readings"
+            - name: Jwt__Issuer
+              valueFrom:
+                configMapKeyRef:
+                  name: sensor-config
+                  key: JWT_ISSUER
+            - name: Jwt__Audience
+              valueFrom:
+                configMapKeyRef:
+                  name: sensor-config
+                  key: JWT_AUDIENCE
+            - name: PlotId
+              valueFrom:
+                configMapKeyRef:
+                  name: sensor-config
+                  key: PLOT_ID
+            - name: ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: sensor-config
+                  key: ENVIRONMENT
+
+            - name: Jwt__Key
+              valueFrom:
+                secretKeyRef:
+                  name: sensor-secrets
+                  key: jwtkey
+            - name: RabbitMQ__UserName
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secrets
+                  key: username
+            - name: RabbitMQ__Password
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secrets
+                  key: password
