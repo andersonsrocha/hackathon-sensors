@@ -29,16 +29,6 @@ spec:
               value: "rabbitmq.messaging.svc.cluster.local"
             - name: RabbitMQ__QueueName
               value: "sensor.readings"
-            - name: Jwt__Issuer
-              valueFrom:
-                configMapKeyRef:
-                  name: sensor-config
-                  key: JWT_ISSUER
-            - name: Jwt__Audience
-              valueFrom:
-                configMapKeyRef:
-                  name: sensor-config
-                  key: JWT_AUDIENCE
             - name: PlotId
               valueFrom:
                 configMapKeyRef:
@@ -50,11 +40,6 @@ spec:
                   name: sensor-config
                   key: ENVIRONMENT
 
-            - name: Jwt__Key
-              valueFrom:
-                secretKeyRef:
-                  name: sensor-secrets
-                  key: jwtkey
             - name: RabbitMQ__UserName
               valueFrom:
                 secretKeyRef:
