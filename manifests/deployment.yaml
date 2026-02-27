@@ -29,6 +29,8 @@ spec:
               value: "rabbitmq.messaging.svc.cluster.local"
             - name: RabbitMQ__QueueName
               value: "sensor.readings"
+            - name: DelayInSeconds
+              value: "300"
             - name: PlotId
               valueFrom:
                 configMapKeyRef:
