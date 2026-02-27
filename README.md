@@ -3,19 +3,19 @@
 <h1>
   <br/>
   <br/>
-  <div>🌽</div>
-  <b>Hackathon</b>
+  <div>�</div>
+  <b>Hackathon Sensors</b>
   <br/>
   <br/>
   <br/>
 </h1>
 
-A **AgroSolutions** é uma cooperativa agrícola tradicional que busca se modernizar
-para enfrentar os desafios do século XXI: otimização de recursos hídricos, aumento
-da produtividade e sustentabilidade. Atualmente, a tomada de decisão no campo é
-baseada majoritariamente na experiência dos agricultores, sem um forte apoio de
-dados em tempo real, o que leva a desperdícios e a uma produtividade abaixo do
-potencial. A aplicação conta com arquitetura Domain-Driven Design (DDD), ASP.NET Core 8, autenticação via JWT e banco de dados SQL Server + MongoDB, além de contar uma boas práticas de arquitetura, segurança e escalabilidade com Kubernetes.
+Sistema de coleta de dados de sensores IoT para monitoramento agrícola da **AgroSolutions**,
+uma cooperativa que busca se modernizar através da Internet das Coisas (IoT). O sistema
+coleta automaticamente dados de sensores como umidade do solo, temperatura ambiente
+e precipitação, enviando essas informações via mensageria RabbitMQ para análise
+em tempo real. A aplicação é um Worker Service desenvolvido em .NET 8 com
+containerização Docker e orquestração Kubernetes para escalabilidade.
 
 </div>
 
@@ -26,12 +26,11 @@ potencial. A aplicação conta com arquitetura Domain-Driven Design (DDD), ASP.N
 <div align="center">
 
 ![.NET Core](https://img.shields.io/badge/.NET%20Core-8.0-512BD4?style=flat&logo=dotnet&logoColor=white)
-![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=flat&logo=microsoft-sql-server&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat&logo=mongodb&logoColor=white)
-![xUnit](https://img.shields.io/badge/xUnit-512BD4?style=flat&logo=.net&logoColor=white)
+![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=flat&logo=rabbitmq&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-000000?style=flat&logo=jsonwebtokens&logoColor=white)
-![DDD](https://img.shields.io/badge/DDD-Domain--Driven%20Design-FF6B6B?style=flat)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326ce5?style=flat&logo=kubernetes&logoColor=white)
+![IoT](https://img.shields.io/badge/IoT-Sensors-00D4AA?style=flat&logo=internetofthings&logoColor=white)
+![Worker Service](https://img.shields.io/badge/Worker%20Service-Background-512BD4?style=flat&logo=.net&logoColor=white)
 
 </div>
 
@@ -44,8 +43,8 @@ potencial. A aplicação conta com arquitetura Domain-Driven Design (DDD), ASP.N
 #### TOC
 
 - [📦 Começando](#-começando)
-- [🖱️ Primeiro acesso](#️-primeiro-acesso)
-- [🚧 Contruindo e publicando a aplicação](#-contruindo-e-publicando-a-aplicação)
+- [� Monitoramento](#-monitoramento)
+- [🚧 Construindo e publicando a aplicação](#-construindo-e-publicando-a-aplicação)
 - [✨ Características](#-características)
 - [🚀 Recursos](#-recursos)
 
@@ -54,6 +53,14 @@ potencial. A aplicação conta com arquitetura Domain-Driven Design (DDD), ASP.N
 </details>
 
 ## 📦 Começando
+
+### Pré-requisitos
+
+- [**.NET 8 SDK**](https://dotnet.microsoft.com/download/dotnet/8.0) - Framework de desenvolvimento
+- **RabbitMQ** - Sistema de mensageria (pode ser Docker ou instalação local)
+- **Docker** (opcional) - Para containerização e RabbitMQ
+
+### Instalação
 
 Comece clonando o repositório `hackathon-sensors`, executando o comando:
 
@@ -67,70 +74,190 @@ Agora acesse o projeto usando:
 cd hackathon-sensors
 ```
 
-Atualize as configurações do RabbitMQ, Id do talhão e delay de execução em `appsettings.json` e realize a restauração dos pacotes:
+Realize a restauração dos pacotes:
 
 ```bash
 dotnet restore
 ```
 
-Dentro da pasta `src`, execute o comando abaixo para iniciar a aplicação:
+Configure o RabbitMQ localmente (necessário para o funcionamento):
 
 ```bash
-dotnet run -p HackathonSensors.WorkerService
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 \
+  -e RABBITMQ_DEFAULT_USER=admin \
+  -e RABBITMQ_DEFAULT_PASS=admin123 \
+  rabbitmq:3-management
 ```
 
-E por fim o serviço estará ativo coletando e enviando os dados para a aplicação de de análise de dados.
+Agora execute o comando abaixo para iniciar o Worker Service:
 
-## 🚧 Contruindo e publicando a aplicação
+```bash
+dotnet run --project src/HackathonSensors.WorkerService
+```
 
-Agora para construirmos a aplicação, basta executar o comando abaixo no diretório raiz do projeto:
+O serviço começará a coletar dados de sensores simulados e enviá-los para a fila RabbitMQ a cada 60 segundos.
+
+<br/>
+
+## 📊 Monitoramento
+
+### Interface Web RabbitMQ
+
+Para monitorar a fila RabbitMQ e os dados sendo coletados:
+
+**URL:** http://localhost:15672
+
+**Credenciais:**
+
+```bash
+Usuário: admin
+Senha: admin123
+```
+
+### Configuração do Sensor
+
+Os sensores podem ser configurados no `appsettings.json`:
+
+```json
+{
+  "PlotId": "73df2149-4b7a-482f-aede-b928aac66842",
+  "DelayInSeconds": 60,
+  "RabbitMQ": {
+    "HostName": "localhost",
+    "UserName": "admin",
+    "Password": "admin123",
+    "QueueName": "sensor.readings"
+  }
+}
+```
+
+### Dados Coletados
+
+**Parâmetros monitorados:**
+
+- 🌡️ **Temperatura**: 15-35°C (simulado)
+- 💧 **Umidade do Solo**: 0-100% (simulado)
+- ☔ **Precipitação**: 0-10mm (simulado)
+- 📅 **Data/Hora**: Timestamp de cada leitura
+- 🗺️ **Plot ID**: Identificador do talhão monitorado
+
+**Intervalo de coleta:** Configurável (padrão: 60 segundos)
+**Fila RabbitMQ:** `sensor.readings`
+
+## 🚧 Construindo e publicando a aplicação
+
+Para construir a aplicação, execute o comando abaixo no diretório raiz do projeto:
 
 ```bash
 dotnet build
 ```
 
-E por fim, para publicar a aplicação:
+Para publicar o Worker Service:
 
 > \[!TIP]
 >
 > É possível trocar a pasta de destino substituindo `./publish` pelo diretório desejado.
 
 ```bash
-dotnet publish -c Release -o ./publish
+dotnet publish -c Release -o ./publish --project src/HackathonSensors.WorkerService
+```
+
+### 🐳 Docker
+
+Para criar a imagem Docker:
+
+```bash
+docker build -t hackathon-sensors .
+```
+
+Para executar via Docker:
+
+```bash
+docker run -d --name sensor-worker \
+  -e PlotId="73df2149-4b7a-482f-aede-b928aac66842" \
+  -e DelayInSeconds="60" \
+  -e RabbitMQ__HostName="host.docker.internal" \
+  hackathon-sensors
+```
+
+### ☸️ Kubernetes
+
+Para fazer deploy no Kubernetes:
+
+```bash
+kubectl apply -f manifests/
 ```
 
 ## ✨ Características
 
-- [x] ~~Usuário admin.~~
-- [x] ~~Banco de dados.~~
-- [x] ~~Login com autenticação JWT.~~
-- [x] ~~Funções admin e user.~~
-- [x] ~~Testes unitários.~~
-  - [x] ~~Validação de senha.~~
-  - [x] ~~Validação de e-mail.~~
-  - [x] ~~Autenticação.~~
-  - [x] ~~Criação de usuário.~~
-- [x] ~~Criação de arquivo Dockerfile.~~
-- [x] ~~Domain-Driven Design.~~
-- [x] ~~Criação de usuário.~~
-- [x] ~~Criação de propriedades.~~
-- [x] ~~Criação de talhões.~~
-- [x] ~~Tratamento de dados.~~
-- [x] ~~Mensageria.~~
-- [x] ~~Sensores.~~
-- [x] ~~Criação de migrations.~~
-- [x] ~~Pipeline de CI/CD~~
+- [x] ~~Coleta automatizada de dados de sensores IoT~~
+- [x] ~~Worker Service para processamento em background~~
+- [x] ~~Integração com RabbitMQ para mensageria~~
+- [x] ~~Simulação de sensores agrícolas realista~~
+- [x] ~~Monitoramento de umidade do solo~~
+- [x] ~~Monitoramento de temperatura ambiente~~
+- [x] ~~Monitoramento de precipitação~~
+- [x] ~~Configuração flexível por talhão (PlotId)~~
+- [x] ~~Intervalos de coleta configuráveis~~
+- [x] ~~Containerização com Docker~~
+- [x] ~~Deploy em Kubernetes com manifests~~
+- [x] ~~Auto-scaling via HPA (Horizontal Pod Autoscaler)~~
+- [x] ~~Logs estruturados para monitoramento~~
+- [x] ~~Arquitetura de microserviços preparada~~
 
 <br/>
 
 ## 🚀 Recursos
 
-- 🎨 **.NET 8 SDK**: Framework moderno e multiplataforma da Microsoft que oferece alta performance, suporte nativo para contêineres, APIs mínimas e recursos avançados de desenvolvimento. Inclui melhorias significativas em performance, garbage collection otimizado e suporte completo para desenvolvimento de aplicações web robustas e escaláveis.
-- 🗄️ **SQL Server**: Sistema de gerenciamento de banco de dados relacional da Microsoft, conhecido por sua robustez, escalabilidade e integração nativa com o ecossistema .NET. Oferece recursos avançados como JSON nativo, transações ACID, alta disponibilidade e ferramentas de análise de performance.
-- 🧪 **xUnit**: Framework de testes unitários para .NET que fornece uma base sólida para testes automatizados, com suporte para testes parametrizados, fixtures e execução paralela.
-- 🐳 **Docker**: Containerização da aplicação para garantir consistência entre ambientes de desenvolvimento, teste e produção, facilitando deploy e escalabilidade.
-- 🔐 **JWT Authentication**: Sistema de autenticação baseado em tokens seguros e stateless, permitindo autorização distribuída e controle de acesso granular.
-- 🏗️ **Domain-Driven Design (DDD)**: Arquitetura que foca no domínio do negócio, promovendo código mais organizando, manutenível e alinhado com as regras de negócio.
+- 🎨 **.NET 8 SDK**: Framework moderno e multiplataforma otimizado para Worker Services e processamento em background. Oferece alta performance para coleta contínua de dados IoT com garbage collection otimizado.
+- 🐰 **RabbitMQ**: Sistema de mensageria robusto e confiável para comunicação assíncrona entre microserviços. Garante entrega confiável dos dados coletados pelos sensores mesmo em cenários de alta disponibilidade.
+- ⚙️ **Worker Service**: Serviço de background .NET especializado para coleta contínua de dados de sensores, executando de forma independente e resiliente com logging estruturado.
+- 🌾 **IoT Sensor Simulation**: Simulador avançado de sensores agrícolas que gera dados realistas de umidade do solo, temperatura e precipitação, permitindo testes sem hardware físico.
+- 🐳 **Docker**: Containerização completa da aplicação para garantir consistência entre ambientes e facilitar deploy de sensores distribuídos em diferentes localidades.
+- ☸️ **Kubernetes**: Orquestração de contêineres com manifests completos incluindo Deployment, Service, ConfigMap e HPA para auto-scaling baseado na carga de trabalho dos sensores.
+- 📊 **Structured Logging**: Sistema de logs estruturados com diferentes níveis para monitoramento eficaz da coleta de dados e troubleshooting de sensores em campo.
+- 🔧 **Configuration Management**: Sistema flexível de configuração permitindo ajustes de PlotId, intervalos de coleta e conexões RabbitMQ sem necessidade de redeployment.
+
+## 🌱 Como Funciona o Sistema
+
+### Arquitetura IoT
+
+O sistema é composto por um **Worker Service** que simula sensores IoT distribuídos em talhões agrícolas. Cada sensor coleta dados ambientais críticos e os transmite via mensageria para processamento.
+
+```mermaid
+graph LR
+    A[Sensores IoT] --> B[Worker Service]
+    B --> C[RabbitMQ Queue]
+    C --> D[Processamento]
+    D --> E[Análise de Dados]
+```
+
+### Fluxo de Dados
+
+1. **Coleta Automática**: Worker Service executa em loop contínuo
+2. **Simulação Realista**: Gera dados baseados em padrões agrícolas reais
+3. **Transmissão Segura**: Envia dados via RabbitMQ com garantia de entrega
+4. **Identificação**: Cada leitura vinculada a um PlotId específico
+5. **Timestamping**: Registro preciso de data/hora para análise temporal
+
+### Dados de Sensor (JSON)
+
+```json
+{
+  "plotId": "73df2149-4b7a-482f-aede-b928aac66842",
+  "date": "2026-02-27T10:30:00Z",
+  "soilMoisture": 65.4,
+  "temperature": 24.8,
+  "precipitation": 2.1
+}
+```
+
+### Escalabilidade
+
+- **Múltiplos Sensores**: Deploy independente por talhão
+- **Kubernetes HPA**: Auto-scaling baseado em carga
+- **Configuração Flexível**: Ajuste de intervalos por ambiente
+- **Tolerância a Falhas**: Recuperação automática de conexão
 
 <br/>
 
