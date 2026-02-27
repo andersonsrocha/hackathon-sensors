@@ -52,3 +52,8 @@ spec:
                 secretKeyRef:
                   name: rabbitmq-secrets
                   key: password
+            - name: NEW_RELIC_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sensor-secrets
+                  key: newrelickey
